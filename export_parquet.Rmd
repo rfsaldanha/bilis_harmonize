@@ -1,0 +1,48 @@
+---
+title: "Export to parquet files"
+author: "Raphael Saldanha"
+date: "2023-06-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages
+
+```{r}
+library(bilis)
+library(piggyback)
+```
+
+## Definitions
+
+```{r}
+indicators <- c("indi_0014", "indi_0015")
+years <- 2010:2010
+spatial_units <- c("mun_res", "regsaude_449_res", "uf_res")
+time_units <- c("year", "month", "week")
+parquet_dir <- "parquet/"
+```
+
+## Export indicators
+
+```{r}
+expand_indi_parquet(agg = spatial_units, agg_time = time_units, anos = years, dir = parquet_dir, indi = indicators)
+```
+
+## Publish on GitHub
+
+```{r}
+release_tag <- format(Sys.time(),'%Y%m%d_%H%M%S')
+pb_release_create(tag = release_tag)
+
+for(f in list.files(path = parquet_dir, full.names = TRUE)){
+  pb_upload(file = f, tag = release_tag)
+}
+```
+
+
+
+
